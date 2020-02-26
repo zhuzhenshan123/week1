@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间的值为dao层接口的权限定名 -->
+<mapper namespace="com.zhuzhenshan.week1.dao.GoodsMapper" >
+	<select id="list" resultMap="goodsMap" >
+		select * from goods 
+		
+		<where>
+			<if test="tid!=0 and tid!=null">
+				and tid=#{tid}
+			</if>
+			<if test="bid!=0 and bid!=null">
+				and bid=#{bid}
+			</if>
+			<if test="p1!=0 and p1!=null">
+				and price &gt;=#{p1}
+			</if>
+			<if test="p2!=0 and p2!=null">
+				and price &lt;=#{p2}
+			</if>
+			<if test="gname!='' and gname!=null">
+				and gname like concat('%',#{gname},'%')
+			</if>
+		</where>
+	</select>
+	<resultMap type="Goods" id="goodsMap">
+		<id property="gid" column="gid" />
+		<result property="gname" column="gname" />
+		<result property="ename" column="ename" />
+		<result property="gsize" column="gsize" />
+		<result property="price" column="price" />
+		<result property="num" column="num" />
+		<result property="biao" column="biao" />
+		<result property="pic" column="pic" />
+		<result property="tid" column="tid" />
+		<result property="bid" column="bid" />
+		<collection property="gbs" ofType="GoodsBrand" column="bid" select="findByBid"></collection>
+		<collection property="gts" ofType="GoodsType" column="tid" select="findByTid"></collection>
+	</resultMap>
+	<select id="findByBid" resultType="GoodsBrand" >
+		select * from goods_brand where bid=#{bid}
+	</select>
+	<select id="findByTid" resultType="GoodsType" >
+		select * from goods_type where tid=#{tid}
+	</select>
+	
+	<insert id="add">
+		insert into goods values(null,#{gname},#{ename},#{gsize},#{price},#{num},#{biao},#{pic},#{tid},#{bid})
+	</insert>
+	
+	
+</mapper>
